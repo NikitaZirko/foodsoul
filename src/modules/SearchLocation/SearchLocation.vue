@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import {debounce} from '@/utils/debounce';
+import {onMounted} from 'vue'
+import {useSearchStore} from './stores/search'
+
+let searchStore:any = null;
+
+onMounted(() => searchStore = useSearchStore());
 
 const validate = (e: Event): Boolean => {
     const userData = (e.target as HTMLInputElement).value.trim();
-    if (userData) return true
-    return false
+    if (userData) return true;
+    return false;
 }
-
-const sendRequest = debounce((e: Event) => {
-    
-}, 300);
 
 const searchHandler = (e: Event) => {
     if (!validate(e)) return;
-    sendRequest(e)
+    searchStore.sendRequest(e);
 }
 </script>
 
@@ -32,7 +33,7 @@ const searchHandler = (e: Event) => {
 </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .location {
     display: flex;
     flex-direction: column;

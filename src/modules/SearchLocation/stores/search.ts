@@ -1,12 +1,16 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import {ref, reactive} from 'vue';
+import {defineStore} from 'pinia';
+import {useSearch} from '@/services/api';
+import {debounce} from '@/utils/debounce';
 
 export const useSearchStore = defineStore('search', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
-  }
+	//const count = ref(0)
 
-  return { count, doubleCount, increment }
-})
+	const sendRequest = debounce(async (e: Event): Promise<void> => {
+		const {isFetching, error, data} = await useSearch((e.target as HTMLInputElement).value);
+	}, 300);
+
+	return {
+        sendRequest
+    };
+});
