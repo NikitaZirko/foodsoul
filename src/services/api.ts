@@ -4,11 +4,13 @@ const BASE_URL: string = 'https://nominatim.openstreetmap.org/';
 
 const useHttp = createFetch({
 	baseUrl: BASE_URL,
-	fetchOptions: {
-        mode: 'no-cors'
-	},
 });
 
-const useSearch = (query: string) => useHttp(`search?format=jsonv2&q=${query}`);
+const useSearch = (query: string) => useHttp(`search?format=jsonv2&q=${query}`, {
+    onFetchError(ctx) {   
+        ctx.error = new Error('Error fetch')
+        return ctx
+    },
+});
 
 export {useSearch}

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import SearchBlock from '@/modules/SearchLocation/SearchLocation.vue'
+import SearchLocation from '@/modules/SearchLocation/SearchLocation.vue'
 </script>
 
 <template>
   <main>
-    <SearchBlock />
+    <SearchLocation />
   </main>
 </template>

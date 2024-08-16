@@ -1,16 +1,32 @@
-import {ref, reactive} from 'vue';
-import {defineStore} from 'pinia';
+import {ref, computed} from 'vue';
+import type { Ref } from 'vue'
+import {defineStore, skipHydrate} from 'pinia';
 import {useSearch} from '@/services/api';
 import {debounce} from '@/utils/debounce';
 
-export const useSearchStore = defineStore('search', () => {
-	//const count = ref(0)
+interface DataRequest{
+    isFetching: Ref<boolean>,
+    error: Ref<any>,
+    data: Ref<unknown>
+}
 
-	const sendRequest = debounce(async (e: Event): Promise<void> => {
-		const {isFetching, error, data} = await useSearch((e.target as HTMLInputElement).value);
-	}, 300);
+export const useSearchStore = defineStore('search', () => {
+
+	const result = ref<DataRequest>({
+        isFetching: ref(false),
+		error: ref(null),
+		data: ref(null)
+    });
+
+    const sendRequest = debounce(async (e: Event): Promise<void> => {
+        const {isFetching, error, data} = await useSearch((e.target as HTMLInputElement).value);
+        result.value.isFetching = isFetching.value;
+        result.value.error = error.value;
+        result.value.data = computed(() => typeof data.value === 'string' ? JSON.parse(data.value) : data);
+    }, 300);
 
 	return {
-        sendRequest
+        sendRequest,
+        result: skipHydrate(result),
     };
 });
